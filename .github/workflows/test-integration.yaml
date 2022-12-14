@@ -1,0 +1,28 @@
+name: Integration tests component
+
+env:
+  # 7 GiB by default on GitHub, setting to 6 GiB
+  # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+  NODE_OPTIONS: --max-old-space-size=6144
+
+on:
+  workflow_call:
+    inputs:
+      TIMEOUT:
+        required: false
+        type: number
+        default: 10
+
+jobs:
+  test-integration:
+    name: Integration
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.TIMEOUT }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version-file: '.nvmrc'
+        cache: 'npm'
+    - run: npm ci
+    - run: npm run test:integration

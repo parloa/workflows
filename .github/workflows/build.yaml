@@ -1,0 +1,37 @@
+name: Docker build and push component
+
+env:
+  REGISTRY: eu.gcr.io
+
+on:
+  workflow_call:
+    inputs:
+      IMAGE:
+        required: true
+        type: string
+      TIMEOUT:
+        required: false
+        type: number
+        default: 10
+    secrets:
+      GCR_ACCESS_TOKEN:
+        required: true
+
+jobs:
+  build:
+    name: Build and push to google cloud container registry
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.TIMEOUT }}
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Login in to Container registry
+      run: |
+        echo ${{ secrets.GCR_ACCESS_TOKEN }} | base64 --decode > account.json
+        cat account.json | docker login -u _json_key --password-stdin ${{ env.REGISTRY }}
+
+    - name: Build docker image
+      run: docker build -t ${{ inputs.IMAGE }}:latest -t ${{ inputs.IMAGE }}:$GITHUB_SHA .
+
+    - name: Push Docker Image
+      run: docker push ${{ inputs.IMAGE }} --all-tags

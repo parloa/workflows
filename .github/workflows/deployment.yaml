@@ -1,0 +1,48 @@
+name: Deployment component
+
+on:
+  workflow_call:
+    inputs:
+      COMPONENT:
+        required: true
+        type: string
+      IMAGE:
+        required: true
+        type: string
+      ENVIRONMENT:
+        required: true
+        type: string
+      TIMEOUT:
+        required: false
+        type: number
+        default: 10
+    secrets:
+      ARGOCD_USER_TOKEN:
+        required: true
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.TIMEOUT }}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        repository: 'parloa/parloa-k8s'
+        token: ${{ secrets.ARGOCD_USER_TOKEN }}
+        ref: main
+
+    - name: Config git
+      run: git config user.email "argocd@parloa.com" && git config user.name "ArgoCD"
+
+    - name: Update manifest image tag
+      run: |
+        cd parloa-components/${{ inputs.COMPONENT }}/overlays/${{ inputs.ENVIRONMENT }}/
+        IMG=$(grep -A1 images kustomization.yaml | tail -1 | awk '{print $3}'); kustomize edit set image ${{ inputs.IMAGE }}:$GITHUB_SHA
+        echo "Updated image tag for $IMG image to $GITHUB_SHA"
+
+    - name: Git commit and push
+      run: |
+        git add .
+        git commit -m '[auto] Image tag update - ${{ inputs.COMPONENT }}'
+        git push origin HEAD
