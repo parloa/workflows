@@ -2,7 +2,7 @@
 
 Collection of reusable workflows
 
-## Use example
+## Use examples
 
 ### CI
 Ideally would run on every push to open Pull Request
