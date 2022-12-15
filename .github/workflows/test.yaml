@@ -12,17 +12,27 @@ on:
         required: false
         type: number
         default: 10
+    secrets:
+      NPM_TOKEN:
+        required: false
 
 jobs:
   test:
     name: Tests
     runs-on: ubuntu-latest
     timeout-minutes: ${{ inputs.TIMEOUT }}
+    env:
+      npm_token: ${{ secrets.NPM_TOKEN }}
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version-file: '.nvmrc'
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run test
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+          cache: "npm"
+
+      - name: Setup npm user
+        if: ${{ env.npm_token != '' }}
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
+
+      - run: npm ci
+      - run: npm run test
