@@ -24,15 +24,15 @@ jobs:
     env:
       npm_token: ${{ secrets.NPM_TOKEN }}
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version-file: '.nvmrc'
-        cache: 'npm'
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+          cache: "npm"
 
-    - name: Setup npm user
-      if: ${{ env.npm_token != '' }}
-      run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
+      - name: Setup npm user
+        if: ${{ env.npm_token != '' }}
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
 
-    - run: npm ci
-    - run: npm run test:integration
+      - run: npm ci
+      - run: npm run test:integration

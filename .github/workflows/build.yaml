@@ -23,15 +23,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: ${{ inputs.TIMEOUT }}
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Login in to Container registry
-      run: |
-        echo ${{ secrets.GCR_ACCESS_TOKEN }} | base64 --decode > account.json
-        cat account.json | docker login -u _json_key --password-stdin ${{ env.REGISTRY }}
+      - name: Login in to Container registry
+        run: |
+          echo ${{ secrets.GCR_ACCESS_TOKEN }} | base64 --decode > account.json
+          cat account.json | docker login -u _json_key --password-stdin ${{ env.REGISTRY }}
 
-    - name: Build docker image
-      run: docker build -t ${{ inputs.IMAGE }}:latest -t ${{ inputs.IMAGE }}:$GITHUB_SHA .
+      - name: Build docker image
+        run: docker build -t ${{ inputs.IMAGE }}:latest -t ${{ inputs.IMAGE }}:$GITHUB_SHA .
 
-    - name: Push Docker Image
-      run: docker push ${{ inputs.IMAGE }} --all-tags
+      - name: Push Docker Image
+        run: docker push ${{ inputs.IMAGE }} --all-tags
