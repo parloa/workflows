@@ -13,11 +13,6 @@ on:
         required: false
         type: number
         default: 10
-    secrets:
-      GCR_ACCESS_TOKEN:
-        required: true
-      NPM_TOKEN:
-        required: true
 
 jobs:
   build:

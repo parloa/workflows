@@ -16,9 +16,6 @@ on:
         required: false
         type: number
         default: 10
-    secrets:
-      ARGOCD_USER_TOKEN:
-        required: true
 
 jobs:
   deploy:
