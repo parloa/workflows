@@ -48,8 +48,6 @@ jobs:
     uses: parloa/workflows/.github/workflows/build.yaml@main
     with:
       IMAGE: eu.gcr.io/<namespace>/<component>
-    secrets:
-      GCR_ACCESS_TOKEN: ${{ secrets.GCR_ACCESS_TOKEN }}
 
   deploy:
     needs: build
@@ -58,6 +56,4 @@ jobs:
       COMPONENT: <component>
       IMAGE: eu.gcr.io/<namespace>/<component>
       ENVIRONMENT: <environment>
-    secrets:
-      ARGOCD_USER_TOKEN: ${{ secrets.ARGOCD_USER_TOKEN }}
 ```
