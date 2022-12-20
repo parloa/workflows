@@ -16,6 +16,10 @@ on:
         required: false
         type: number
         default: 10
+      IMAGE_TAG:
+        required: false
+        type: string
+        default: $GITHUB_SHA
     secrets:
       ARGOCD_USER_TOKEN:
         required: true
@@ -38,8 +42,8 @@ jobs:
       - name: Update manifest image tag
         run: |
           cd parloa-components/${{ inputs.COMPONENT }}/overlays/${{ inputs.ENVIRONMENT }}/
-          IMG=$(grep -A1 images kustomization.yaml | tail -1 | awk '{print $3}'); kustomize edit set image ${{ inputs.IMAGE }}:$GITHUB_SHA
-          echo "Updated image tag for $IMG image to $GITHUB_SHA"
+          IMG=$(grep -A1 images kustomization.yaml | tail -1 | awk '{print $3}'); kustomize edit set image ${{ inputs.IMAGE }}:${{ inputs.IMAGE_TAG }}
+          echo "Updated image tag for $IMG image to ${{ inputs.IMAGE_TAG }}"
 
       - name: Git commit and push
         run: |
