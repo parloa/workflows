@@ -16,7 +16,7 @@ on:
     secrets:
       GCR_ACCESS_TOKEN:
         required: true
-    NPM_TOKEN:
+      NPM_TOKEN:
         required: false
 
 jobs:
