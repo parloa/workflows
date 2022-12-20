@@ -6,20 +6,20 @@ on:
       COMPONENT:
         required: true
         type: string
-      IMAGE:
-        required: true
-        type: string
       ENVIRONMENT:
         required: true
         type: string
-      TIMEOUT:
-        required: false
-        type: number
-        default: 10
+      IMAGE:
+        required: true
+        type: string
       IMAGE_TAG:
         required: false
         type: string
         default: $GITHUB_SHA
+      TIMEOUT:
+        required: false
+        type: number
+        default: 10
     secrets:
       ARGOCD_USER_TOKEN:
         required: true
