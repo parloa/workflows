@@ -24,8 +24,6 @@ jobs:
     name: Build and push to google cloud container registry
     runs-on: ubuntu-latest
     timeout-minutes: ${{ inputs.TIMEOUT }}
-    env:
-      npm_token: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@v3
 
@@ -35,12 +33,7 @@ jobs:
           cat account.json | docker login -u _json_key --password-stdin ${{ env.REGISTRY }}
 
       - name: Build docker image
-        if: ${{ env.npm_token != '' }}
         run: docker build -t ${{ inputs.IMAGE }}:latest -t ${{ inputs.IMAGE }}:$GITHUB_SHA --build-arg NPM_TOKEN=${{ secrets.NPM_TOKEN }} .
-
-      - name: Build docker image
-        if: ${{ env.npm_token == '' }}
-        run: docker build -t ${{ inputs.IMAGE }}:latest -t ${{ inputs.IMAGE }}:$GITHUB_SHA .
 
       - name: Push Docker Image
         run: docker push ${{ inputs.IMAGE }} --all-tags
