@@ -16,6 +16,8 @@ on:
     secrets:
       GCR_ACCESS_TOKEN:
         required: true
+    NPM_TOKEN:
+        required: false
 
 jobs:
   build:
@@ -31,7 +33,7 @@ jobs:
           cat account.json | docker login -u _json_key --password-stdin ${{ env.REGISTRY }}
 
       - name: Build docker image
-        run: docker build -t ${{ inputs.IMAGE }}:latest -t ${{ inputs.IMAGE }}:$GITHUB_SHA .
+        run: docker build -t ${{ inputs.IMAGE }}:latest -t ${{ inputs.IMAGE }}:$GITHUB_SHA --build-arg NPM_TOKEN=${{ secrets.NPM_TOKEN }} .
 
       - name: Push Docker Image
         run: docker push ${{ inputs.IMAGE }} --all-tags
